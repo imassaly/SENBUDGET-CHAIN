@@ -1,0 +1,39 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  deploy:
+    name: Build and Deploy to Vercel
+    runs-on: ubuntu-latest
+
+    steps:
+      # Récupération du code source
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Installation Node.js (Vercel fonctionne avec Node)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Installation des dépendances
+      - name: Install dependencies
+        run: npm install
+
+      # Build du projet (Next.js, React, Vue, etc.)
+      - name: Build project
+        run: npm run build
+
+      # Installation du CLI Vercel
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Déploiement vers Vercel (via token secret)
+      - name: Deploy to Vercel
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --confirm --yes
